@@ -9,7 +9,7 @@ const readCell = (worksheet, rowNum, colNum) => {
 };
 
 const isEndOfData = (worksheet, rowNum) => {
-  const cellData = readCell(worksheet, rowNum, 0);
+  const cellData = readCell(worksheet, rowNum, 2);
   if (cellData === 'TOTAL') {
     return true;
   }
@@ -17,36 +17,37 @@ const isEndOfData = (worksheet, rowNum) => {
 };
 
 exports.readBad = function (fileName, callback) {
-  var workbook = XLSX.readFile(fileName);
-
   const workbook = XLSX.readFile(fileName);
   const worksheet = workbook.Sheets[workbook.SheetNames[BAD_SHEET_POSITION]];
 
   // const yearCellValue = worksheet.F6.v;
-  const YEAR = 2017;
-  const MONTH = 1;
+  const year = 2017;
+  const month = 1;
   const bads = [];
   const startRow = 27;
   for (let i = startRow; i < (startRow + MAXIMUM_ROW); i += 1) {
     if (isEndOfData(worksheet, i)) {
       break;
     }
-    const projectCode = readCell(worksheet, i, 6);
-    const piutangUsaha = readCell(worksheet, i, 1);
-    const tagihanBruto = readCell(worksheet, i, 2);
-    const piutangRetensi = readCell(worksheet, i, 3);
-    const pdp = readCell(worksheet, i, 4);
-    const bad = readCell(worksheet, i, 5);
-    bads.push({
-      projectCode,
-      piutangUsaha,
-      tagihanBruto,
-      piutangRetensi,
-      pdp,
-      bad,
-      year,
-    });
+    const projectCode = readCell(worksheet, i, 0);
+    if (projectCode) {
+      const piutangUsaha = readCell(worksheet, i, 2);
+      const tagihanBruto = readCell(worksheet, i, 3);
+      const piutangRetensi = readCell(worksheet, i, 4);
+      const pdp = readCell(worksheet, i, 5);
+      const bad = readCell(worksheet, i, 6);
+      bads.push({
+        projectCode,
+        piutangUsaha,
+        tagihanBruto,
+        piutangRetensi,
+        pdp,
+        bad,
+        year,
+        month
+      });
+    }
   }
 
-  callback({ year: YEAR, month: MONTH, payload: bads });
+  callback({ payload: bads });
 };

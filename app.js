@@ -61,7 +61,7 @@ const displayResult = (result, title) => {
     ==============================
     ${title}
     ==============================
-    ${JSON.stringify(res.body)}
+    ${JSON.stringify(result)}
     ===============================
     `);
 }
@@ -87,7 +87,7 @@ signIn({ username: 'yusuf', password: 'xupipuharo' })
       });
     });
   } else if (type === 'FIN') {
-    BadReader.readbad(program.filename, (parseResult) => {
+    BadReader.readBad(program.filename, (parseResult) => {
       postData(`${Constant.serverUrl}/batchcreate/bad`, parseResult)
       .then((res) => {
         displayResult(res.body, 'BAD upload result');
