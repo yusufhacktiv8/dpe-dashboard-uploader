@@ -17,4 +17,12 @@ program
     const password = yield prompt.password('Password: ');
     console.log('username', username);
     console.log('Password', password);
+
+    request
+      .post('http://dashboard-dpe.wika.co.id/api/security/signin')
+      .send({ username, password }) // sends a JSON post body
+      .set('accept', 'json')
+      .end((err, res) => {
+        console.log(res.body.token);
+      });
   });
