@@ -6,23 +6,71 @@ const request = require('superagent');
 const fs = require('fs');
 const path = require('path');
 
+const ExcelReader = require('./helpers/excel_reader');
+const Constant = require('./Constant');
+
 program
   .option('-f, --filename <filename>', 'The user to authenticate as')
   .parse(process.argv);
 
   console.log('File name: ', program.filename);
 
-  co(function *() {
-    const username = yield prompt('Username: ');
-    const password = yield prompt.password('Password: ');
-    console.log('username', username);
-    console.log('Password', password);
+  // co(function *() {
+  //   const username = yield prompt('Username: ');
+  //   const password = yield prompt.password('Password: ');
+  //   console.log('username', username);
+  //   console.log('Password', password);
+  //
+  //   request
+  //     .post('http://dashboard-dpe.wika.co.id/api/security/signin')
+  //     .send({ username, password }) // sends a JSON post body
+  //     .set('accept', 'json')
+  //     .end((err, res) => {
+  //       console.log(res.body.token);
+  //       ExcelReader.readProjectProgress(program.filename, (projectProgresses) => {
+  //         console.log(projectProgresses);
+  //       });
+  //     });
+  //   });
 
+    // request
+    //   .post('http://dashboard-dpe.wika.co.id/api/security/signin')
+    //   .send({ username: 'yusuf', password: 'xupipuharo' }) // sends a JSON post body
+    //   .set('accept', 'json')
+    //   .end((err, res) => {
+    //     console.log(res.body.token);
+    //     ExcelReader.readProjectProgress(program.filename, (projectProgresses) => {
+    //       console.log(projectProgresses);
+    //     });
+    //   });
+
+const signIn = (signInData) => {
+  return new Promise((resolve, reject) => {
+    postData(`${Constant.serverUrl}/security/signin`, signInData)
+    .then((res) => {
+      resolve(res.body.token);
+    });
+  });
+};
+
+const postData = (url, data) => {
+  return new Promise((resolve, reject) => {
     request
-      .post('http://dashboard-dpe.wika.co.id/api/security/signin')
-      .send({ username, password }) // sends a JSON post body
+      .post(url)
+      .send(data)
       .set('accept', 'json')
       .end((err, res) => {
-        console.log(res.body.token);
+        resolve(res);
       });
   });
+};
+
+signIn({ username: 'yusuf', password: 'xupipuharo' })
+.then((token) => {
+  ExcelReader.readProjectProgress(program.filename, (projectProgresses) => {
+    postData(`${Constant.serverUrl}/batchcreate/projectprogress`, projectProgresses)
+    .then((res) => {
+      console.log(res);
+    })
+  });
+});
