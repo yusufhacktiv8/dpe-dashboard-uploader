@@ -7,10 +7,12 @@ const fs = require('fs');
 const path = require('path');
 
 const ExcelReader = require('./helpers/excel_reader');
+const BadReader = require('./helpers/bad');
 const Constant = require('./Constant');
 
 program
-  .option('-f, --filename <filename>', 'The user to authenticate as')
+  .option('-f, --filename <filename>', 'Filename')
+  .option('-t, --type <type>', 'Type')
   .parse(process.argv);
 
   console.log('File name: ', program.filename);
@@ -54,34 +56,43 @@ const postData = (url, data) => {
   });
 };
 
+const displayResult = (result, title) => {
+  console.log(`
+    ==============================
+    ${title}
+    ==============================
+    ${JSON.stringify(res.body)}
+    ===============================
+    `);
+}
+
+const type = 'FIN';
+
 signIn({ username: 'yusuf', password: 'xupipuharo' })
 // signIn({ username: 'yusuf', password: 'admin' })
 .then((token) => {
-  ExcelReader.readProjectProgress(program.filename, (parseResult) => {
-    postData(`${Constant.serverUrl}/batchcreate/projectprogress`, parseResult)
-    .then((res) => {
 
-      console.log(`
-        ==============================
-        Project progress upload result
-        ==============================
-        ${JSON.stringify(res.body)}
-        ===============================
-        `);
+  if (type === 'OPS') {
+    ExcelReader.readProjectProgress(program.filename, (parseResult) => {
+      postData(`${Constant.serverUrl}/batchcreate/projectprogress`, parseResult)
+      .then((res) => {
+        displayResult(res.body, 'Project progress upload result');
+      });
     });
-  });
 
-  ExcelReader.readLsp(program.filename, (parseResult) => {
-    postData(`${Constant.serverUrl}/batchcreate/lsp`, parseResult)
-    .then((res) => {
-
-      console.log(`
-        ==============================
-        LSP upload result
-        ==============================
-        ${JSON.stringify(res.body)}
-        ===============================
-        `);
+    ExcelReader.readLsp(program.filename, (parseResult) => {
+      postData(`${Constant.serverUrl}/batchcreate/lsp`, parseResult)
+      .then((res) => {
+        displayResult(res.body, 'LSP upload result');
+      });
     });
-  });
+  } else if (type === 'FIN') {
+    BadReader.readbad(program.filename, (parseResult) => {
+      postData(`${Constant.serverUrl}/batchcreate/bad`, parseResult)
+      .then((res) => {
+        displayResult(res.body, 'BAD upload result');
+      });
+    });
+  }
+
 });
