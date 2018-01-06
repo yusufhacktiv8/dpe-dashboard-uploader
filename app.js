@@ -54,13 +54,34 @@ const postData = (url, data) => {
   });
 };
 
-// signIn({ username: 'yusuf', password: 'xupipuharo' })
-signIn({ username: 'yusuf', password: 'admin' })
+signIn({ username: 'yusuf', password: 'xupipuharo' })
+// signIn({ username: 'yusuf', password: 'admin' })
 .then((token) => {
   ExcelReader.readProjectProgress(program.filename, (parseResult) => {
     postData(`${Constant.serverUrl}/batchcreate/projectprogress`, parseResult)
     .then((res) => {
-      console.log(res);
-    })
+
+      console.log(`
+        ==============================
+        Project progress upload result
+        ==============================
+        ${JSON.stringify(res.body)}
+        ===============================
+        `);
+    });
+  });
+
+  ExcelReader.readLsp(program.filename, (parseResult) => {
+    postData(`${Constant.serverUrl}/batchcreate/lsp`, parseResult)
+    .then((res) => {
+
+      console.log(`
+        ==============================
+        LSP upload result
+        ==============================
+        ${JSON.stringify(res.body)}
+        ===============================
+        `);
+    });
   });
 });

@@ -80,3 +80,125 @@ exports.readProjectProgress = function (fileName, callback) {
 
   callback({ year: YEAR, projectProgresses });
 };
+
+exports.readLsp = function (fileName, callback) {
+  var workbook = XLSX.readFile(fileName);
+
+  var firstSheetName = workbook.SheetNames[RINCIAN_SHEET_POSITION];
+  var worksheet = workbook.Sheets[firstSheetName];
+
+  // const yearCellValue = worksheet.F6.v;
+  const YEAR = 2017;
+
+  var labaSetelahPajak = [];
+
+  var getData = function(cellName, ws){
+
+    return ws[cellName]? ws[cellName].v : 0;
+  }
+
+  for (let row = 8; row < 150; row += 1) {
+    const name = worksheet['C' + row] ? worksheet['C' + row].v : '';
+
+    if(name == 'Laba Setelah Pajak'){
+      labaSetelahPajak.push({
+        month: 1,
+        year: YEAR,
+        lsp_rkap: getData(('J' + row), worksheet),
+        lsp_prognosa: getData(('M' + row), worksheet),
+        lsp_realisasi: getData(('P' + row), worksheet),
+      });
+
+      labaSetelahPajak.push({
+        month: 2,
+        year: YEAR,
+        lsp_rkap: getData(('S' + row), worksheet),
+        lsp_prognosa: getData(('V' + row), worksheet),
+        lsp_realisasi: getData(('Y' + row), worksheet),
+      });
+
+      labaSetelahPajak.push({
+        month: 3,
+        year: YEAR,
+        lsp_rkap: getData(('AB' + row), worksheet),
+        lsp_prognosa: getData(('AE' + row), worksheet),
+        lsp_realisasi: getData(('AH' + row), worksheet),
+      });
+
+      labaSetelahPajak.push({
+        month: 4,
+        year: YEAR,
+        lsp_rkap: getData(('AK' + row), worksheet),
+        lsp_prognosa: getData(('AN' + row), worksheet),
+        lsp_realisasi: getData(('AQ' + row), worksheet),
+      });
+
+      labaSetelahPajak.push({
+        month: 5,
+        year: YEAR,
+        lsp_rkap: getData(('AT' + row), worksheet),
+        lsp_prognosa: getData(('AW' + row), worksheet),
+        lsp_realisasi: getData(('AZ' + row), worksheet),
+      });
+
+      labaSetelahPajak.push({
+        month: 6,
+        year: YEAR,
+        lsp_rkap: getData(('BC' + row), worksheet),
+        lsp_prognosa: getData(('BF' + row), worksheet),
+        lsp_realisasi: getData(('BI' + row), worksheet),
+      });
+
+      labaSetelahPajak.push({
+        month: 7,
+        year: YEAR,
+        lsp_rkap: getData(('BL' + row), worksheet),
+        lsp_prognosa: getData(('BO' + row), worksheet),
+        lsp_realisasi: getData(('BR' + row), worksheet),
+      });
+
+      labaSetelahPajak.push({
+        month: 8,
+        year: YEAR,
+        lsp_rkap: getData(('BU' + row), worksheet),
+        lsp_prognosa: getData(('BX' + row), worksheet),
+        lsp_realisasi: getData(('CA' + row), worksheet),
+      });
+
+      labaSetelahPajak.push({
+        month: 9,
+        year: YEAR,
+        lsp_rkap: getData(('CD' + row), worksheet),
+        lsp_prognosa: getData(('CG' + row), worksheet),
+        lsp_realisasi: getData(('CJ' + row), worksheet),
+      });
+
+      labaSetelahPajak.push({
+        month: 10,
+        year: YEAR,
+        lsp_rkap: getData(('CM' + row), worksheet),
+        lsp_prognosa: getData(('CP' + row), worksheet),
+        lsp_realisasi: getData(('CS' + row), worksheet),
+      });
+
+      labaSetelahPajak.push({
+        month: 11,
+        year: YEAR,
+        lsp_rkap: getData(('CV' + row), worksheet),
+        lsp_prognosa: getData(('CY' + row), worksheet),
+        lsp_realisasi: getData(('DB' + row), worksheet),
+      });
+
+      labaSetelahPajak.push({
+        month: 12,
+        year: YEAR,
+        lsp_rkap: getData(('DE' + row), worksheet),
+        lsp_prognosa: getData(('DH' + row), worksheet),
+        lsp_realisasi: getData(('DK' + row), worksheet),
+      });
+      break;
+    }
+  }
+
+  callback({ year: YEAR, labaSetelahPajak });
+};
