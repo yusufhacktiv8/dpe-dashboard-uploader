@@ -33,17 +33,6 @@ program
   //     });
   //   });
 
-    // request
-    //   .post('http://dashboard-dpe.wika.co.id/api/security/signin')
-    //   .send({ username: 'yusuf', password: 'xupipuharo' }) // sends a JSON post body
-    //   .set('accept', 'json')
-    //   .end((err, res) => {
-    //     console.log(res.body.token);
-    //     ExcelReader.readProjectProgress(program.filename, (projectProgresses) => {
-    //       console.log(projectProgresses);
-    //     });
-    //   });
-
 const signIn = (signInData) => {
   return new Promise((resolve, reject) => {
     postData(`${Constant.serverUrl}/security/signin`, signInData)
@@ -65,10 +54,11 @@ const postData = (url, data) => {
   });
 };
 
-signIn({ username: 'yusuf', password: 'xupipuharo' })
+// signIn({ username: 'yusuf', password: 'xupipuharo' })
+signIn({ username: 'yusuf', password: 'admin' })
 .then((token) => {
-  ExcelReader.readProjectProgress(program.filename, (projectProgresses) => {
-    postData(`${Constant.serverUrl}/batchcreate/projectprogress`, projectProgresses)
+  ExcelReader.readProjectProgress(program.filename, (parseResult) => {
+    postData(`${Constant.serverUrl}/batchcreate/projectprogress`, parseResult)
     .then((res) => {
       console.log(res);
     })

@@ -78,5 +78,5 @@ exports.readProjectProgress = function (fileName, callback) {
     }
   }
 
-  callback(projectProgresses);
+  callback({ year: YEAR, projectProgresses });
 };
