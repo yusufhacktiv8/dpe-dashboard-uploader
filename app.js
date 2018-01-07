@@ -9,6 +9,7 @@ const path = require('path');
 const ExcelReader = require('./helpers/excel_reader');
 const BadReader = require('./helpers/bad');
 const UmurPiutangReader = require('./helpers/umur_piutang');
+const CashFlowReader = require('./helpers/cash_flow');
 const Constant = require('./Constant');
 
 program
@@ -99,6 +100,13 @@ signIn({ username: 'yusuf', password: 'admin' })
       postData(`${Constant.serverUrl}/batchcreate/umurpiutang`, parseResult)
       .then((res) => {
         displayResult(res.body, 'Umur piutang upload result');
+      });
+    });
+  } else if (type === 'FIN3') {
+    CashFlowReader.read(program.filename, (parseResult) => {
+      postData(`${Constant.serverUrl}/batchcreate/cashflow`, parseResult)
+      .then((res) => {
+        displayResult(res.body, 'Cashflow upload result');
       });
     });
   }
