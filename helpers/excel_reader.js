@@ -202,3 +202,19 @@ exports.readLsp = function (fileName, callback) {
 
   callback({ year: YEAR, labaSetelahPajak });
 };
+
+exports.readClaim = function (fileName, callback) {
+  const workbook = XLSX.readFile(fileName);
+
+  const firstSheetName = workbook.SheetNames[RINCIAN_SHEET_POSITION];
+  const worksheet = workbook.Sheets[firstSheetName];
+
+  const year = 2017;
+
+  const getData = (cellName, ws) => (ws[cellName] ? ws[cellName].v : 0);
+  const ok = getData('DV10', worksheet);
+  const op = getData('DW10', worksheet);
+  const lk = getData('DX10', worksheet);
+
+  callback({ year, payload: { ok, op, lk } });
+}

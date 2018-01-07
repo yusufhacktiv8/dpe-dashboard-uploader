@@ -71,8 +71,8 @@ const displayResult = (result, title) => {
 
 const type = program.type;
 
-signIn({ username: 'yusuf', password: 'xupipuharo' })
-// signIn({ username: 'yusuf', password: 'admin' })
+// signIn({ username: 'yusuf', password: 'xupipuharo' })
+signIn({ username: 'yusuf', password: 'admin' })
 .then((token) => {
 
   if (type === 'OPS') {
@@ -87,6 +87,13 @@ signIn({ username: 'yusuf', password: 'xupipuharo' })
       postData(`${Constant.serverUrl}/batchcreate/lsp`, parseResult)
       .then((res) => {
         displayResult(res.body, 'LSP upload result');
+      });
+    });
+
+    ExcelReader.readClaim(program.filename, (parseResult) => {
+      postData(`${Constant.serverUrl}/batchcreate/claim`, parseResult)
+      .then((res) => {
+        displayResult(res.body, 'Claim upload result');
       });
     });
   } else if (type === 'FIN1') {
