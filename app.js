@@ -10,6 +10,7 @@ const ExcelReader = require('./helpers/excel_reader');
 const BadReader = require('./helpers/bad');
 const UmurPiutangReader = require('./helpers/umur_piutang');
 const CashFlowReader = require('./helpers/cash_flow');
+const ProjectionReader = require('./helpers/projection');
 const Constant = require('./Constant');
 
 program
@@ -107,6 +108,13 @@ signIn({ username: 'yusuf', password: 'admin' })
       postData(`${Constant.serverUrl}/batchcreate/cashflow`, parseResult)
       .then((res) => {
         displayResult(res.body, 'Cashflow upload result');
+      });
+    });
+  }  else if (type === 'FIN4') {
+    Projection.read(program.filename, (parseResult) => {
+      postData(`${Constant.serverUrl}/batchcreate/projection`, parseResult)
+      .then((res) => {
+        displayResult(res.body, 'Prognosa piutang upload result');
       });
     });
   }
