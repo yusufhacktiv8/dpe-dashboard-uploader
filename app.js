@@ -8,6 +8,7 @@ const path = require('path');
 
 const ExcelReader = require('./helpers/excel_reader');
 const BadReader = require('./helpers/bad');
+const UmurPiutangReader = require('./helpers/umur_piutang');
 const Constant = require('./Constant');
 
 program
@@ -66,10 +67,10 @@ const displayResult = (result, title) => {
     `);
 }
 
-const type = 'FIN';
+const type = program.type;
 
-signIn({ username: 'yusuf', password: 'xupipuharo' })
-// signIn({ username: 'yusuf', password: 'admin' })
+// signIn({ username: 'yusuf', password: 'xupipuharo' })
+signIn({ username: 'yusuf', password: 'admin' })
 .then((token) => {
 
   if (type === 'OPS') {
@@ -86,11 +87,18 @@ signIn({ username: 'yusuf', password: 'xupipuharo' })
         displayResult(res.body, 'LSP upload result');
       });
     });
-  } else if (type === 'FIN') {
+  } else if (type === 'FIN1') {
     BadReader.readBad(program.filename, (parseResult) => {
       postData(`${Constant.serverUrl}/batchcreate/bad`, parseResult)
       .then((res) => {
         displayResult(res.body, 'BAD upload result');
+      });
+    });
+  } else if (type === 'FIN2') {
+    UmurPiutangReader.read(program.filename, (parseResult) => {
+      postData(`${Constant.serverUrl}/batchcreate/umurpiutang`, parseResult)
+      .then((res) => {
+        displayResult(res.body, 'Umur piutang upload result');
       });
     });
   }
