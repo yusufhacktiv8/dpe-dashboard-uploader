@@ -71,8 +71,8 @@ const displayResult = (result, title) => {
 
 const type = program.type;
 
-// signIn({ username: 'yusuf', password: 'xupipuharo' })
-signIn({ username: 'yusuf', password: 'admin' })
+signIn({ username: 'yusuf', password: 'xupipuharo' })
+// signIn({ username: 'yusuf', password: 'admin' })
 .then((token) => {
 
   if (type === 'OPS') {
@@ -111,7 +111,7 @@ signIn({ username: 'yusuf', password: 'admin' })
       });
     });
   }  else if (type === 'FIN4') {
-    Projection.read(program.filename, (parseResult) => {
+    ProjectionReader.read(program.filename, (parseResult) => {
       postData(`${Constant.serverUrl}/batchcreate/projection`, parseResult)
       .then((res) => {
         displayResult(res.body, 'Prognosa piutang upload result');
