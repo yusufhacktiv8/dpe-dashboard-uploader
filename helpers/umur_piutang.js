@@ -53,11 +53,9 @@ const readAllProjectsDataInAYear = (worksheet, year) => {
   return allProjectsDataInAYear;
 };
 
-exports.read = function (fileName, callback) {
+exports.read = function (fileName, year, callback) {
   const workbook = XLSX.readFile(fileName);
   const worksheet = workbook.Sheets[workbook.SheetNames[PIUTANG_SHEET_POSITION]];
-  // const yearCellValue = worksheet.F6.v;
-  const year = 2017;
   const allProjectsDataInAYear = readAllProjectsDataInAYear(worksheet, year);
 
   callback({ year, payload: allProjectsDataInAYear });

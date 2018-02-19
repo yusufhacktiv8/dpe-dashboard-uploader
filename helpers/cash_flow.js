@@ -124,11 +124,9 @@ const readAllCashFlowDataInAYear = (worksheet, year) => {
   return allCashFlowDataInAYear;
 };
 
-exports.read = function (fileName, callback) {
+exports.read = function (fileName, year, callback) {
   const workbook = XLSX.readFile(fileName);
   const worksheet = workbook.Sheets[workbook.SheetNames[CASH_FLOW_SHEET_POSITION]];
-  // const yearCellValue = worksheet.F6.v;
-  const year = 2017;
   const allCashFlowDataInAYear = readAllCashFlowDataInAYear(worksheet, year);
   callback({ year, payload: allCashFlowDataInAYear });
 };

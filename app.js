@@ -1,6 +1,3 @@
-const program = require('commander');
-const co = require('co');
-const prompt = require('co-prompt');
 const request = require('superagent');
 const fs = require('fs');
 const path = require('path');
@@ -11,13 +8,6 @@ const UmurPiutangReader = require('./helpers/umur_piutang');
 const CashFlowReader = require('./helpers/cash_flow');
 const ProjectionReader = require('./helpers/projection');
 const Constant = require('./Constant');
-
-program
-  .option('-f, --filename <filename>', 'Filename')
-  .option('-t, --type <type>', 'Type')
-  .parse(process.argv);
-
-  console.log('File name: ', program.filename);
 
 const signIn = (signInData) => {
   return new Promise((resolve, reject) => {
@@ -41,7 +31,7 @@ const postData = (url, data) => {
 };
 
 const displayResult = (result, title) => {
-  console.log(`
+  return(`
     ==============================
     ${title}
     ==============================
@@ -50,66 +40,65 @@ const displayResult = (result, title) => {
     `);
 }
 
-const processSend = (username, password, type) => {
-  signIn({ username, password, type })
+const processSend = (username, password, fileName, type, year, printCallback) => {
+  signIn({ username, password })
   .then((token) => {
+    if (!token) {
+      printCallback('Login failed.');
+      return;
+    }
+    
     if (type === 'OPS') {
-      ExcelReader.readProjectProgress(program.filename, (parseResult) => {
+      ExcelReader.readProjectProgress(fileName, year, (parseResult) => {
         postData(`${Constant.serverUrl}/batchcreate/projectprogress`, parseResult)
         .then((res) => {
-          displayResult(res.body, 'Project progress upload result');
+          printCallback(displayResult(res.body, 'Project progress upload result'));
         });
       });
 
-      ExcelReader.readLsp(program.filename, (parseResult) => {
+      ExcelReader.readLsp(fileName, year, (parseResult) => {
         postData(`${Constant.serverUrl}/batchcreate/lsp`, parseResult)
         .then((res) => {
-          displayResult(res.body, 'LSP upload result');
+          printCallback(displayResult(res.body, 'LSP upload result'));
         });
       });
 
-      ExcelReader.readClaim(program.filename, (parseResult) => {
+      ExcelReader.readClaim(fileName, year, (parseResult) => {
         postData(`${Constant.serverUrl}/batchcreate/claim`, parseResult)
         .then((res) => {
-          displayResult(res.body, 'Claim upload result');
+          printCallback(displayResult(res.body, 'Claim upload result'));
         });
       });
     } else if (type === 'FIN1') {
-      BadReader.readBad(program.filename, (parseResult) => {
+      BadReader.readBad(fileName, year, (parseResult) => {
         postData(`${Constant.serverUrl}/batchcreate/bad`, parseResult)
         .then((res) => {
-          displayResult(res.body, 'BAD upload result');
+          printCallback(displayResult(res.body, 'BAD upload result'));
         });
       });
     } else if (type === 'FIN2') {
-      UmurPiutangReader.read(program.filename, (parseResult) => {
+      UmurPiutangReader.read(fileName, year, (parseResult) => {
         postData(`${Constant.serverUrl}/batchcreate/umurpiutang`, parseResult)
         .then((res) => {
-          displayResult(res.body, 'Umur piutang upload result');
+          printCallback(displayResult(res.body, 'Umur piutang upload result'));
         });
       });
     } else if (type === 'FIN3') {
-      CashFlowReader.read(program.filename, (parseResult) => {
+      CashFlowReader.read(fileName, year, (parseResult) => {
         postData(`${Constant.serverUrl}/batchcreate/cashflow`, parseResult)
         .then((res) => {
-          displayResult(res.body, 'Cashflow upload result');
+          printCallback(displayResult(res.body, 'Cashflow upload result'));
         });
       });
     }  else if (type === 'FIN4') {
-      ProjectionReader.read(program.filename, (parseResult) => {
+      ProjectionReader.read(fileName, year, (parseResult) => {
         postData(`${Constant.serverUrl}/batchcreate/projection`, parseResult)
         .then((res) => {
-          displayResult(res.body, 'Prognosa piutang upload result');
+          printCallback(displayResult(res.body, 'Prognosa piutang upload result'));
         });
       });
     }
   });
 }
 
-co(function *() {
-  const username = yield prompt('Username: ');
-  const password = yield prompt.password('Password: ');
-  const type = program.type;
-
-  processSend(username, password, type);
-});
+exports.processSend = processSend;

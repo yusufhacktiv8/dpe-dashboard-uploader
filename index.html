@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>DPE Dashboard Upload File</title>
+  </head>
+  <body style="font-family: arial;">
+    <table>
+      <tr>
+        <td>Username</td>
+        <td><input id="theUsername" type="text"></td>
+      </tr>
+      <tr>
+        <td>Password</td>
+        <td><input id="thePassword" type="password"></td>
+      </tr>
+      <tr>
+        <td>File</td>
+        <td><input id="theFile" name="myFile" type="file"></td>
+      </tr>
+      <tr>
+        <td>Type</td>
+        <td>
+          <select id="theType">
+            <option value="OPS">Operation</option>
+            <option value="FIN1">BAD</option>
+            <option value="FIN2">Umur Piutang</option>
+            <option value="FIN3">Cash Flow</option>
+            <option value="FIN4">Prognosa Piutang</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Year</td>
+        <td>
+          <select id="theYear">
+            <script>
+              let year = new Date().getYear();
+              if (year<1900)
+                year+=1900;
+              for (let i = year; i >= year - 5; i--) {
+                document.write(`<option value="${i}">${i}</option>`);
+              }
+            </script>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><input id="theButton" type="button" value="Send"></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><textarea id="theResult" rows="20" cols="80"></textarea></td>
+      </tr>
+    </table>
+
+    <script>
+      // You can also require other files to run in this process
+      require('./renderer.js');
+      const bridge = require('./bridge.js');
+      bridge.initApp();
+    </script>
+  </body>
+</html>

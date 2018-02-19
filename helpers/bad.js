@@ -16,12 +16,10 @@ const isEndOfData = (worksheet, rowNum) => {
   return false;
 };
 
-exports.readBad = function (fileName, callback) {
+exports.readBad = function (fileName, year, callback) {
   const workbook = XLSX.readFile(fileName);
   const worksheet = workbook.Sheets[workbook.SheetNames[BAD_SHEET_POSITION]];
 
-  // const yearCellValue = worksheet.F6.v;
-  const year = 2017;
   const month = 1;
   const bads = [];
   const startRow = 27;

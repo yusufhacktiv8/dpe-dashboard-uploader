@@ -25,12 +25,10 @@ const readProjectionsDataInAYear = (worksheet, year, startRow) => {
   return projectionDataInAYear;
 };
 
-exports.read = function (fileName, callback) {
+exports.read = function (fileName, year, callback) {
   const workbook = XLSX.readFile(fileName);
   const worksheet = workbook.Sheets[workbook.SheetNames[PROJECTION_SHEET_POSITION]];
 
-  // const yearCellValue = worksheet.F6.v;
-  const year = 2017;
   const projectionsDataInAYear = readProjectionsDataInAYear(worksheet, year, 4);
 
   callback({ year, payload: projectionsDataInAYear });

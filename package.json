@@ -1,26 +1,26 @@
 {
-  "name": "dpe-uploader",
+  "name": "electron-quick-start",
   "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "description": "A minimal Electron application",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/yusufhacktiv8/dpe-dashboard-uploader.git"
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "~1.7.8"
   },
-  "author": "Yusuf",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/yusufhacktiv8/dpe-dashboard-uploader/issues"
-  },
-  "homepage": "https://github.com/yusufhacktiv8/dpe-dashboard-uploader#readme",
   "dependencies": {
     "superagent": "^1.4.0",
-    "commander": "^2.9.0",
-    "co": "^4.6.0",
-    "co-prompt": "^1.0.0",
     "xlsx": "^0.8.5"
   }
 }

@@ -3,12 +3,12 @@ const XLSX = require('xlsx');
 const INPUTAN_SHEET_POSITION = 0;
 const RINCIAN_SHEET_POSITION = 1;
 
-exports.readProjectProgress = function (fileName, callback) {
+exports.readProjectProgress = function (fileName, year, callback) {
   const workbook = XLSX.readFile(fileName);
   const worksheet = workbook.Sheets[workbook.SheetNames[INPUTAN_SHEET_POSITION]];
 
   const yearCellValue = worksheet.F6.v;
-  const YEAR = 2017; // parseInt(yearCellValue.match(/[0-9]+/)[0], 10);
+  const YEAR = year;
 
   const projectProgresses = [];
 
@@ -81,14 +81,13 @@ exports.readProjectProgress = function (fileName, callback) {
   callback({ year: YEAR, projectProgresses });
 };
 
-exports.readLsp = function (fileName, callback) {
+exports.readLsp = function (fileName, year, callback) {
   var workbook = XLSX.readFile(fileName);
 
   var firstSheetName = workbook.SheetNames[RINCIAN_SHEET_POSITION];
   var worksheet = workbook.Sheets[firstSheetName];
 
-  // const yearCellValue = worksheet.F6.v;
-  const YEAR = 2017;
+  const YEAR = year;
 
   var labaSetelahPajak = [];
 
@@ -203,13 +202,11 @@ exports.readLsp = function (fileName, callback) {
   callback({ year: YEAR, labaSetelahPajak });
 };
 
-exports.readClaim = function (fileName, callback) {
+exports.readClaim = function (fileName, year, callback) {
   const workbook = XLSX.readFile(fileName);
 
   const firstSheetName = workbook.SheetNames[RINCIAN_SHEET_POSITION];
   const worksheet = workbook.Sheets[firstSheetName];
-
-  const year = 2017;
 
   const getData = (cellName, ws) => (ws[cellName] ? ws[cellName].v : 0);
   const ok = getData('DV10', worksheet);
