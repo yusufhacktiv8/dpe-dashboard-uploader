@@ -7,11 +7,11 @@ const BadReader = require('./helpers/bad');
 const UmurPiutangReader = require('./helpers/umur_piutang');
 const CashFlowReader = require('./helpers/cash_flow');
 const ProjectionReader = require('./helpers/projection');
-const Constant = require('./Constant');
+const constant = require('./constant');
 
 const signIn = (signInData) => {
   return new Promise((resolve, reject) => {
-    postData(`${Constant.serverUrl}/security/signin`, signInData)
+    postData(`${constant.serverUrl}/security/signin`, signInData)
     .then((res) => {
       resolve(res.body.token);
     });
@@ -47,52 +47,52 @@ const processSend = (username, password, fileName, type, year, printCallback) =>
       printCallback('Login failed.');
       return;
     }
-    
+
     if (type === 'OPS') {
       ExcelReader.readProjectProgress(fileName, year, (parseResult) => {
-        postData(`${Constant.serverUrl}/batchcreate/projectprogress`, parseResult)
+        postData(`${constant.serverUrl}/batchcreate/projectprogress`, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'Project progress upload result'));
         });
       });
 
       ExcelReader.readLsp(fileName, year, (parseResult) => {
-        postData(`${Constant.serverUrl}/batchcreate/lsp`, parseResult)
+        postData(`${constant.serverUrl}/batchcreate/lsp`, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'LSP upload result'));
         });
       });
 
       ExcelReader.readClaim(fileName, year, (parseResult) => {
-        postData(`${Constant.serverUrl}/batchcreate/claim`, parseResult)
+        postData(`${constant.serverUrl}/batchcreate/claim`, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'Claim upload result'));
         });
       });
     } else if (type === 'FIN1') {
       BadReader.readBad(fileName, year, (parseResult) => {
-        postData(`${Constant.serverUrl}/batchcreate/bad`, parseResult)
+        postData(`${constant.serverUrl}/batchcreate/bad`, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'BAD upload result'));
         });
       });
     } else if (type === 'FIN2') {
       UmurPiutangReader.read(fileName, year, (parseResult) => {
-        postData(`${Constant.serverUrl}/batchcreate/umurpiutang`, parseResult)
+        postData(`${constant.serverUrl}/batchcreate/umurpiutang`, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'Umur piutang upload result'));
         });
       });
     } else if (type === 'FIN3') {
       CashFlowReader.read(fileName, year, (parseResult) => {
-        postData(`${Constant.serverUrl}/batchcreate/cashflow`, parseResult)
+        postData(`${constant.serverUrl}/batchcreate/cashflow`, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'Cashflow upload result'));
         });
       });
     }  else if (type === 'FIN4') {
       ProjectionReader.read(fileName, year, (parseResult) => {
-        postData(`${Constant.serverUrl}/batchcreate/projection`, parseResult)
+        postData(`${constant.serverUrl}/batchcreate/projection`, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'Prognosa piutang upload result'));
         });
