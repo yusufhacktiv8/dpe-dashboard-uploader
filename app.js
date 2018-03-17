@@ -82,19 +82,19 @@ const processSend = (username, password, fileName, type, year, printCallback) =>
         });
       });
 
-      // ExcelReader.readLsp(fileName, year, (parseResult) => {
-      //   postData(`${constant.serverUrl}/batchcreate/lsp`, parseResult)
-      //   .then((res) => {
-      //     printCallback(displayResult(res.body, 'LSP upload result'));
-      //   });
-      // });
-      //
-      // ExcelReader.readClaim(fileName, year, (parseResult) => {
-      //   postData(`${constant.serverUrl}/batchcreate/claim`, parseResult)
-      //   .then((res) => {
-      //     printCallback(displayResult(res.body, 'Claim upload result'));
-      //   });
-      // });
+      ExcelReader.readLsp(fileName, year, (parseResult) => {
+        postDataSecure(`${constant.serverUrl}/lsps/batchcreate`, token, parseResult)
+        .then((res) => {
+          printCallback(displayResult(res.body, 'LSP upload result'));
+        });
+      });
+
+      ExcelReader.readClaim(fileName, year, (parseResult) => {
+        postDataSecure(`${constant.serverUrl}/claims/batchcreate`, token, parseResult)
+        .then((res) => {
+          printCallback(displayResult(res.body, 'Claim upload result'));
+        });
+      });
     } else if (type === 'FIN1') {
       BadReader.readBad(fileName, year, (parseResult) => {
         postData(`${constant.serverUrl}/batchcreate/bad`, parseResult)
