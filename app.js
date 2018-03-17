@@ -97,7 +97,7 @@ const processSend = (username, password, fileName, type, year, printCallback) =>
       });
     } else if (type === 'FIN1') {
       BadReader.readBad(fileName, year, (parseResult) => {
-        postData(`${constant.serverUrl}/batchcreate/bad`, parseResult)
+        postDataSecure(`${constant.serverUrl}/bads/batchcreate`, token, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'BAD upload result'));
         });
