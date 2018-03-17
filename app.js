@@ -78,7 +78,7 @@ const processSend = (username, password, fileName, type, year, printCallback) =>
           printCallback(displayResult(res.body, 'Project progress upload result'));
         })
         .catch((err) => {
-          printCallback(displayResult(`Error: ${err.response.text}, status: ${err.response.status}`, 'Project progress upload error!'));
+          printCallback(displayResult(`Error: ${err.response.text}, status: ${err.response.status}`, 'Upload error!'));
         });
       });
 
@@ -86,6 +86,9 @@ const processSend = (username, password, fileName, type, year, printCallback) =>
         postDataSecure(`${constant.serverUrl}/lsps/batchcreate`, token, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'LSP upload result'));
+        })
+        .catch((err) => {
+          printCallback(displayResult(`Error: ${err.response.text}, status: ${err.response.status}`, 'Upload error!'));
         });
       });
 
@@ -93,6 +96,9 @@ const processSend = (username, password, fileName, type, year, printCallback) =>
         postDataSecure(`${constant.serverUrl}/claims/batchcreate`, token, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'Claim upload result'));
+        })
+        .catch((err) => {
+          printCallback(displayResult(`Error: ${err.response.text}, status: ${err.response.status}`, 'Upload error!'));
         });
       });
     } else if (type === 'FIN1') {
@@ -100,27 +106,39 @@ const processSend = (username, password, fileName, type, year, printCallback) =>
         postDataSecure(`${constant.serverUrl}/bads/batchcreate`, token, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'BAD upload result'));
+        })
+        .catch((err) => {
+          printCallback(displayResult(`Error: ${err.response.text}, status: ${err.response.status}`, 'Upload error!'));
         });
       });
     } else if (type === 'FIN2') {
       UmurPiutangReader.read(fileName, year, (parseResult) => {
-        postData(`${constant.serverUrl}/batchcreate/umurpiutang`, parseResult)
+        postDataSecure(`${constant.serverUrl}/umurpiutangs/batchcreate`, token, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'Umur piutang upload result'));
+        })
+        .catch((err) => {
+          printCallback(displayResult(`Error: ${err.response.text}, status: ${err.response.status}`, 'Upload error!'));
         });
       });
     } else if (type === 'FIN3') {
       CashFlowReader.read(fileName, year, (parseResult) => {
-        postData(`${constant.serverUrl}/batchcreate/cashflow`, parseResult)
+        postDataSecure(`${constant.serverUrl}/cashflows/batchcreate`, token, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'Cashflow upload result'));
+        })
+        .catch((err) => {
+          printCallback(displayResult(`Error: ${err.response.text}, status: ${err.response.status}`, 'Upload error!'));
         });
       });
     }  else if (type === 'FIN4') {
       ProjectionReader.read(fileName, year, (parseResult) => {
-        postData(`${constant.serverUrl}/batchcreate/projection`, parseResult)
+        postDataSecure(`${constant.serverUrl}/projections/batchcreate`, token, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'Prognosa piutang upload result'));
+        })
+        .catch((err) => {
+          printCallback(displayResult(`Error: ${err.response.text}, status: ${err.response.status}`, 'Upload error!'));
         });
       });
     }
