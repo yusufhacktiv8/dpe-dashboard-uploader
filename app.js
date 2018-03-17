@@ -23,9 +23,32 @@ const postData = (url, data) => {
     request
       .post(url)
       .send(data)
-      .set('accept', 'json')
+      .set({'Content-Type': 'application/json', 'accept': 'json'})
       .end((err, res) => {
-        resolve(res);
+        if (!err) {
+          resolve(res);
+        } else {
+          reject(err);
+        }
+
+      });
+  });
+};
+
+const postDataSecure = (url, token, data) => {
+  return new Promise((resolve, reject) => {
+    console.log('Token: ', token);
+    request
+      .post(url)
+      .send(data)
+      .set({'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`, 'accept': 'json'})
+      .end((err, res) => {
+        if (!err) {
+          resolve(res);
+        } else {
+          reject(err);
+        }
+
       });
   });
 };
@@ -50,25 +73,28 @@ const processSend = (username, password, fileName, type, year, printCallback) =>
 
     if (type === 'OPS') {
       ExcelReader.readProjectProgress(fileName, year, (parseResult) => {
-        postData(`${constant.serverUrl}/batchcreate/projectprogress`, parseResult)
+        postDataSecure(`${constant.serverUrl}/projectprogresses/batchcreate`, token, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'Project progress upload result'));
+        })
+        .catch((err) => {
+          printCallback(displayResult(`Error: ${err.response.text}, status: ${err.response.status}`, 'Project progress upload error!'));
         });
       });
 
-      ExcelReader.readLsp(fileName, year, (parseResult) => {
-        postData(`${constant.serverUrl}/batchcreate/lsp`, parseResult)
-        .then((res) => {
-          printCallback(displayResult(res.body, 'LSP upload result'));
-        });
-      });
-
-      ExcelReader.readClaim(fileName, year, (parseResult) => {
-        postData(`${constant.serverUrl}/batchcreate/claim`, parseResult)
-        .then((res) => {
-          printCallback(displayResult(res.body, 'Claim upload result'));
-        });
-      });
+      // ExcelReader.readLsp(fileName, year, (parseResult) => {
+      //   postData(`${constant.serverUrl}/batchcreate/lsp`, parseResult)
+      //   .then((res) => {
+      //     printCallback(displayResult(res.body, 'LSP upload result'));
+      //   });
+      // });
+      //
+      // ExcelReader.readClaim(fileName, year, (parseResult) => {
+      //   postData(`${constant.serverUrl}/batchcreate/claim`, parseResult)
+      //   .then((res) => {
+      //     printCallback(displayResult(res.body, 'Claim upload result'));
+      //   });
+      // });
     } else if (type === 'FIN1') {
       BadReader.readBad(fileName, year, (parseResult) => {
         postData(`${constant.serverUrl}/batchcreate/bad`, parseResult)
