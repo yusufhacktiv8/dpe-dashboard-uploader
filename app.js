@@ -113,7 +113,7 @@ const processSend = (username, password, fileName, type, year, printCallback) =>
       });
     } else if (type === 'FIN2') {
       UmurPiutangReader.read(fileName, year, (parseResult) => {
-        postDataSecure(`${constant.serverUrl}/umurpiutangs/batchcreate`, token, parseResult)
+        postDataSecure(`${constant.serverUrl}/piutangs/batchcreate`, token, parseResult)
         .then((res) => {
           printCallback(displayResult(res.body, 'Umur piutang upload result'));
         })
