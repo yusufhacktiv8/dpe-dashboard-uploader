@@ -1,4 +1,5 @@
 const XLSX = require('xlsx');
+const _ = require('lodash');
 
 const INPUTAN_SHEET_POSITION = 0;
 const RINCIAN_SHEET_POSITION = 1;
@@ -14,6 +15,45 @@ exports.readProjectProgress = function (fileName, year, callback) {
 
   const colNames = ['I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
     'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR'
+  ];
+
+  const PROJECT_TYPES = [
+    {
+      id: 1,
+      title: 'PROYEK LAMA NON JO/NON KSO',
+    },
+    {
+      id: 2,
+      title: 'PROYEK LAMA JO/KSO',
+    },
+    {
+      id: 3,
+      title: 'PROYEK LAMA INTERN',
+    },
+    {
+      id: 4,
+      title: 'PROYEK BARU SUDAH DIPEROLEH NON JO/NON KSO',
+    },
+    {
+      id: 5,
+      title: 'PROYEK BARU SUDAH DIPEROLEH JO/KSO',
+    },
+    {
+      id: 6,
+      title: 'PROYEK BARU SUDAH DIPEROLEH INTERN',
+    },
+    {
+      id: 7,
+      title: 'PROYEK BARU DALAM PENGUSAHAAN NON JO/NON KSO',
+    },
+    {
+      id: 8,
+      title: 'PROYEK BARU DALAM PENGUSAHAAN JO/KSO',
+    },
+    {
+      id: 9,
+      title: 'PROYEK BARU DALAM PENGUSAHAAN INTERN',
+    },
   ];
 
   const getProjectProgress = (projectCode, row, month, year) => {
@@ -59,6 +99,35 @@ exports.readProjectProgress = function (fileName, year, callback) {
     return projectProgress;
   };
 
+  const fillAndOrderProjectTypesRow = (worksheet) => {
+    const result = [];
+    for (let row = 10; row < 500; row += 1) {
+      let projectCode = worksheet[`C${row}`] ? worksheet[`C${row}`].v : '';
+      let details = worksheet[`D${row}`] ? worksheet[`D${row}`].v : '';
+      if (projectCode === 'END') {
+        break;
+      }
+      const projectType = _.find(PROJECT_TYPES, { title: details });
+      if (projectType) {
+        result.push({ id: projectType.id, row});
+      }
+    }
+    return _.orderBy(result, ['row'], ['desc']);
+  }
+
+  const getProjectTypeIdByRow = (projectTypes, row) => {
+    for (let i = 0; i < projectTypes.length; i += 1) {
+      const projectType = projectTypes[i];
+      if (row > projectType.row) {
+        return projectType.id;
+      }
+    }
+    return null;
+  }
+
+  const orderedProjectTypes = fillAndOrderProjectTypesRow(worksheet);
+  // console.log('orderedProjectTypes: ', orderedProjectTypes);
+
   for (let row = 11; row < 500; row += 1) {
     let projectCode = worksheet['C' + row] ? worksheet['C' + row].v : '';
 
@@ -72,11 +141,14 @@ exports.readProjectProgress = function (fileName, year, callback) {
 
       for (let month = 1; month <= 12; month += 1) {
         const tmpProjectProgress = getProjectProgress(projectCode, row, month, YEAR, worksheet);
+        tmpProjectProgress.projectType = getProjectTypeIdByRow(orderedProjectTypes, row);
         projectProgresses.push(tmpProjectProgress);
       }
       row += 2;
     }
   }
+
+  console.log('projectProgresses: =======> ', projectProgresses);
 
   callback({ year: YEAR, projectProgresses });
 };
