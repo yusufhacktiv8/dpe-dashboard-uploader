@@ -1,6 +1,6 @@
 const XLSX = require('xlsx');
 
-const CASH_FLOW_SHEET_POSITION = 1;
+const CASH_FLOW_SHEET_POSITION = 0;
 
 const readCell = (worksheet, rowNum, colNum) => {
   const cellIdentity = XLSX.utils.encode_cell({ r: rowNum, c: colNum });

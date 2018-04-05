@@ -1,6 +1,6 @@
 const XLSX = require('xlsx');
 
-const BAD_SHEET_POSITION = 2;
+const BAD_SHEET_POSITION = 0;
 const MAXIMUM_ROW = 150;
 
 const readCell = (worksheet, rowNum, colNum) => {
@@ -19,8 +19,8 @@ const isEndOfData = (worksheet, rowNum) => {
 exports.readBad = function (fileName, year, callback) {
   const workbook = XLSX.readFile(fileName);
   const worksheet = workbook.Sheets[workbook.SheetNames[BAD_SHEET_POSITION]];
-
-  const month = 1;
+  console.log('SheetNames: ', workbook.SheetNames);
+  const month = readCell(worksheet, 28, 7);
   const bads = [];
   const startRow = 27;
   for (let i = startRow; i < (startRow + MAXIMUM_ROW); i += 1) {
